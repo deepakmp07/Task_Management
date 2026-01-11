@@ -1,195 +1,135 @@
-🗂 Task Management REST API
+# Task Management REST API
 
-A production-ready RESTful API built with Java Spring Boot for managing users and tasks.
-This project demonstrates clean code practices, layered architecture, database migrations, security, and automated testing.
+A REST API for managing tasks and users built with Spring Boot and PostgreSQL.
 
-🚀 Key Features
+## Prerequisites
 
-User Management
+- Java 17+
+- Maven 3.6+
+- PostgreSQL 14+
 
-Create and retrieve users
+## Quick Setup
 
-Enforces unique email constraint
+### 1. Create Database
 
-Task Lifecycle Management
-
-Full CRUD operations (Create, Read, Update, Delete)
-
-Advanced Filtering
-
-Filter tasks by:
-
-status
-
-priority
-
-assignedUser
-
-Pagination
-
-Server-side pagination for efficient data loading
-
-Security
-
-Static API Key authentication using a custom Spring Security filter
-
-Data Integrity
-
-Database schema migrations handled by Flyway
-
-🛠 Tech Stack
-
-Language: Java 17+
-
-Framework: Spring Boot 3.x
-
-Spring Web
-
-Spring Data JPA
-
-Spring Security
-
-Spring Validation
-
-Database:
-
-PostgreSQL (Production)
-
-H2 (Testing)
-
-Migration Tool: Flyway
-
-Build Tool: Maven
-
-Testing:
-
-JUnit 5
-
-Mockito
-
-Utilities:
-
-Lombok
-
-🏃 Getting Started
-1️⃣ Prerequisites
-
-Ensure you have the following installed:
-
-JDK 17 or higher
-
-Maven 3.6+
-
-PostgreSQL Server
-
-2️⃣ Database Setup
-
-Login to PostgreSQL and create the database:
-
+```bash
+psql -U postgres
 CREATE DATABASE task_management;
+\q
+```
 
-3️⃣ Application Configuration
+### 2. Configure Application
 
-Update the file:
+Edit `src/main/resources/application.properties`:
 
-src/main/resources/application.properties
-
+```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/task_management
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+spring.datasource.username=postgres
+spring.datasource.password=YOUR_PASSWORD
 
-# API Authentication Key
-api.key=test-api-key
+api.key=your-secret-api-key-12345
+```
 
-4️⃣ Running the Application
-# Compile and package the project
+### 3. Build & Run
+
+```bash
+# Build
 mvn clean install
 
-# Run the Spring Boot application
+# Run
 mvn spring-boot:run
+```
 
+Application will start at: **http://localhost:8080**
 
-The API will be available at:
+## Testing the API
 
-http://localhost:8080
+### Using Postman
 
-🔒 Security & Authentication
+1. **Set Header** for all requests:
+   ```
+   X-API-KEY: your-secret-api-key-12345
+   ```
 
-This API is protected using a static API key.
+2. **Create a User**:
+   ```
+   POST http://localhost:8080/api/users
+   Content-Type: application/json
+   
+   {
+     "name": "John Doe",
+     "email": "john@example.com"
+   }
+   ```
 
-Required Request Header
-Header Key	Description	Example
-X-API-KEY	Static API access key	test-api-key
+3. **Create a Task**:
+   ```
+   POST http://localhost:8080/api/tasks
+   Content-Type: application/json
+   
+   {
+     "title": "Complete project",
+     "description": "Finish the API",
+     "status": "TODO",
+     "priority": "HIGH",
+     "assignedToId": 1
+   }
+   ```
 
-⚠️ Every API request must include this header, otherwise you will receive a 401 Unauthorized response.
+4. **Get All Tasks**:
+   ```
+   GET http://localhost:8080/api/tasks
+   ```
 
-📁 API Endpoints
-👤 User Endpoints
-Method	Endpoint	Description
-POST	/api/users	Register a new user
-GET	/api/users	Get all users (Paginated)
-GET	/api/users/{id}	Get user by ID
-✅ Task Endpoints
-Method	Endpoint	Description
-POST	/api/tasks	Create a new task
-GET	/api/tasks	Get tasks (Filter & Pagination)
-GET	/api/tasks/{id}	Get task by ID
-PUT	/api/tasks/{id}	Update a task
-PATCH	/api/tasks/{id}/status	Update task status
-DELETE	/api/tasks/{id}	Delete a task
+## API Endpoints
 
-Filtering Parameters:
+### Users
+- `POST /api/users` - Create user
+- `GET /api/users` - Get all users
+- `GET /api/users/{id}` - Get user by ID
 
-status
+### Tasks
+- `POST /api/tasks` - Create task
+- `GET /api/tasks` - Get all tasks (supports filtering)
+- `GET /api/tasks/{id}` - Get task by ID
+- `PUT /api/tasks/{id}` - Update task
+- `PATCH /api/tasks/{id}/status` - Update task status
+- `DELETE /api/tasks/{id}` - Delete task
 
-priority
+### Filters (for GET /api/tasks)
+- `?status=TODO` - Filter by status (TODO, IN_PROGRESS, DONE)
+- `?priority=HIGH` - Filter by priority (LOW, MEDIUM, HIGH)
+- `?assignedToId=1` - Filter by assigned user
+- `?page=0&size=10` - Pagination
 
-assignedToId
+## Run Tests
 
-🧪 Testing & Quality
-
-The project includes a comprehensive test suite to ensure reliability and correctness.
-
-Running Tests
+```bash
 mvn test
+```
 
-Test Coverage
+## Project Structure
 
-Unit Tests
+```
+src/
+├── main/java/com/example/taskmanagement/
+│   ├── controller/     # REST endpoints
+│   ├── service/        # Business logic
+│   ├── repository/     # Database access
+│   ├── entity/         # Database models
+│   └── dto/            # Request/Response objects
+└── test/               # Unit & Integration tests
+```
 
-Located in src/test/java/.../service
+## Tech Stack
 
-Tests business logic using Mockito
+- Spring Boot 3.2.0
+- Spring Data JPA
+- PostgreSQL
+- Flyway (Database migrations)
+- Lombok
+- JUnit 5 & Mockito (Testing)
 
-Integration Tests
+---
 
-Located in src/test/java/.../controller
-
-Tests full API flow using MockMvc and H2
-
-🏗 Project Architecture
-
-The application follows a Layered Architecture:
-
-Controller Layer
-
-Handles HTTP requests and validation
-
-Service Layer
-
-Contains business logic and transactions
-
-Repository Layer
-
-Manages database access using Spring Data JPA
-
-DTO Layer
-
-Separates API models from database entities
-
-✅ Status
-
-✔ Production-ready
-✔ Secure
-✔ Tested
-✔ Clean architecture
+**That's it! You're ready to go.** 🚀
