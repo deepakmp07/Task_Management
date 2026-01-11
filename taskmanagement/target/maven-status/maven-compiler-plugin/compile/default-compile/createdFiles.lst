@@ -1,0 +1,5 @@
+com/example/taskmanagement/enums/TaskPriority.class
+com/example/taskmanagement/entity/Task.class
+com/example/taskmanagement/entity/User.class
+com/example/taskmanagement/enums/TaskStatus.class
+com/example/taskmanagement/repository/TaskRepository.class
